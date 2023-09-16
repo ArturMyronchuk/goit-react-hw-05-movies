@@ -38,7 +38,7 @@ const MovieDetails = () => {
   const navigate = useNavigate();
 
   const handleMoveBack = () => {
-    if (location.state) {
+    if (location.state && location.state.from) {
       navigate(location.state.from);
       return;
     }
@@ -92,8 +92,12 @@ const MovieDetails = () => {
         )}
       </Flex>
       <Div>
-        <StyledLink to="cast">Cast </StyledLink>
-        <StyledLink to="reviews">Reviews </StyledLink>
+        <StyledLink to="cast" state={{ from: location }}>
+          Cast
+        </StyledLink>
+        <StyledLink to="reviews" state={{ from: location }}>
+          Reviews
+        </StyledLink>
       </Div>
       <Outlet />
     </Container>
