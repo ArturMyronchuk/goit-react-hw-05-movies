@@ -1,4 +1,4 @@
-import { useParams, useLocation, Outlet, useNavigate } from 'react-router-dom';
+import { useParams, Outlet, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { responses } from 'services/api';
 import { Loader } from 'components/Loader/Loader';
@@ -17,6 +17,7 @@ const MovieDetails = () => {
   const [movieData, setMovieData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!movieId) return;
@@ -34,15 +35,8 @@ const MovieDetails = () => {
     fetchMovieData();
   }, [movieId]);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const handleMoveBack = () => {
-    if (location.state && location.state.from) {
-      navigate(location.state.from);
-      return;
-    }
-    navigate('/');
+    navigate(-1);
   };
 
   const imgSrc = movieData?.poster_path
@@ -92,12 +86,8 @@ const MovieDetails = () => {
         )}
       </Flex>
       <Div>
-        <StyledLink to="cast" state={{ from: location }}>
-          Cast
-        </StyledLink>
-        <StyledLink to="reviews" state={{ from: location }}>
-          Reviews
-        </StyledLink>
+        <StyledLink to="cast">Cast</StyledLink>
+        <StyledLink to="reviews">Reviews</StyledLink>
       </Div>
       <Outlet />
     </Container>
