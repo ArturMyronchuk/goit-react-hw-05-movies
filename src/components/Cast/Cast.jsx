@@ -1,52 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { responses } from 'services/api';
+import { useFetchMovies } from 'hooks/fetchApi';
+import PropTypes from 'prop-types';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Img, DivSwaiper, P } from './Cast.styled';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Pagination, Navigation } from 'swiper/modules';
+import { NoPoster } from 'pages/MovieDetails/MovieDetails.styled';
 
-const Cast = () => {
-  const [cast, setCast] = useState([]);
+export const Cast = () => {
   const { movieId } = useParams();
+  const { data, fetchApi } = useFetchMovies();
 
   useEffect(() => {
-    const Cast = async () => {
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzZDVkNWI0NDRjNmE4OGRjMzhjNzFjNDk4NjkwOGJmOCIsInN1YiI6IjY0ZDRhMTUwZDEwMGI2MDBjNWNmYTc1MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.oN_XdkYxFImA0SoU4WlFVfk3cEJmjoUrVEqps9KaPM0',
-        },
-      };
-
-      try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
-          options
-        );
-        const data = await response.json();
-        setCast(data.cast);
-        // console.log(data.cast);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    Cast();
-  }, [movieId]);
+    if (!movieId) return;
+    fetchApi(responses.fetchMovieByCast(movieId));
+  }, [fetchApi, movieId]);
+  const dataCast = data?.cast;
 
   return (
-    <section>
-      <ul>
-        {cast.map(char => {
-          return (
-            <li key={char.id}>
-              {/* <img src={`https://image.tmdb.org/t/p/${char.profile_path}`} alt="Ups, something is wrong" /> */}
-              <p>{char.name}</p>
-              <p>Character: {char.character}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+    <div>
+      {!!dataCast && dataCast.length > 0 ? (
+        <Swiper
+          pagination={{
+            type: 'fraction',
+          }}
+          navigation={true}
+          modules={[Pagination, Navigation]}
+          className="mySwiper"
+        >
+          {dataCast.map(cast => (
+            <SwiperSlide key={cast.id}>
+              <DivSwaiper>
+                {cast.profile_path ? (
+                  <Img
+                    src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                    alt={cast.name}
+                  />
+                ) : (
+                  <NoPoster />
+                )}
+                <h3>{cast.name}</h3>
+                <P>Character: {cast.character}</P>
+              </DivSwaiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <h2>We don't have any cast of this movie 🤔</h2>
+      )}
+    </div>
   );
 };
 
-export default Cast;
+Cast.propTypes = {
+  dataCast: PropTypes.shape({
+    character: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    profile_path: PropTypes.string,
+  }),
+  fetchApi: PropTypes.func,
+};
