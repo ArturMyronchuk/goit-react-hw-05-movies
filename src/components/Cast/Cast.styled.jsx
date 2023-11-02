@@ -20,5 +20,4 @@ export const P = styled.p`
   font-size: 18px;
   margin-top: 0px;
   padding-bottom: 20px;
-  
 `;

@@ -23,7 +23,7 @@ export const Cast = () => {
 
   return (
     <div>
-      {!!dataCast && dataCast.length > 0 ? (
+      {!!dataCast&& dataCast.length > 0 ? (
         <Swiper
           pagination={{
             type: 'fraction',
@@ -62,5 +62,5 @@ Cast.propTypes = {
     name: PropTypes.string.isRequired,
     profile_path: PropTypes.string,
   }),
-  fetchApi: PropTypes.func,
+ fetchApi: PropTypes.func,
 };

@@ -9,7 +9,8 @@ export const Form = styled.form`
   display: flex;
   align-items: center;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 3px;
+  padding-bottom: 50px;
 `;
 
 export const Button = styled.button`
