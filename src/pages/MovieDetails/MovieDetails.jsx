@@ -2,6 +2,7 @@ import { useParams, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { responses } from 'services/api';
 import { Loader } from 'components/Loader/Loader';
+import { useRef } from 'react';
 import {
   NoPoster,
   Wrapper,
@@ -36,13 +37,9 @@ const MovieDetails = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-
+  const backLinkLocationRef = useRef(location.state?.from || '/movies');
   const handleMoveBack = () => {
-    if (location.state) {
-      navigate(location.state.from);
-      return;
-    }
-    navigate('/');
+    navigate(backLinkLocationRef.current);
   };
 
   const imgSrc = movieData?.poster_path
